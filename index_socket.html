@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8' />
+		<title>socket.io</title>
+	</head>
+	<body>
+		<h1>Realtime Response</h1>
+		<div id='pesan' style='border:1px solid #ccc; width=1000; height:100px;'></div>
+		<p>
+			<input type="text" name="msg" id="content_msg" style="width:300px">
+			<input type="button" value="send message" id="msg" />
+		</p>
+		
+		<script src='http://code.jquery.com/jquery-1.10.1.min.js'></script>
+		<script src='/socket.io/socket.io.js'></script>
+		<script>
+			var socket = io.connect('http://localhost:8080');
+			
+			// the visitor is asked for their username
+			var username = prompt("your username");
+			
+			// it's sent with the signal "little newbie" (to differentiate it from "message")
+			socket.emit('add_username', username);
+			
+			// a dialog box is displayed when the server sends us a "message"
+			socket.on('message', function(message) {
+				$("#pesan").append('<br>'+message);
+			});
+			
+			// when button is clicked, a "message" is sent to the server
+			$("#msg").click(function() {
+				$("#pesan").append('<br>'+$("#content_msg").val());
+				socket.emit('message', $("#content_msg").val());
+			});
+		</script>
+	</body>	
+</html>
